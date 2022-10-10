@@ -8,7 +8,7 @@ name="viewport"
 content="width=1920, height=1080, initial-scale=2.4, user-scalable=no"/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" > </script>
 </head>
-<body style="margin: 0px; overflow: hidden; ">
+<body style="margin: 0px; ">
         <video  style="width: 100%; height: auto;" class="op-player__media" id="video1" ></video>
 </body>
 <style>
@@ -38,9 +38,9 @@ var line = 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21854952015/StarhubD
             player.init();
             //player.getMedia().load();
             //player.play();
-            player.loadAd(line);
+        //     player.loadAd(line);
 
-        //     setTimeout(load, 50);
+            setTimeout(load, 50);
             setTimeout(play, 50);
             
         //     player.getControls().getContainer().hidden = true;
