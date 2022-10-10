@@ -38,17 +38,19 @@ var line = 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21854952015/StarhubD
             player.init();
             //player.getMedia().load();
             //player.play();
-        //     player.loadAd(line);
+            player.loadAd(line);
 
-            setTimeout(load, 50);
-            setTimeout(play, 50);
+        //     setTimeout(load, 50);
+        //     setTimeout(play, 50);
+                player.play();
+                player.getAd().play();
             
         //     player.getControls().getContainer().hidden = true;
 
 
             function play(){
                 console.log("play");
-                // player.play();
+                player.play();
                 player.getAd().play();
             }
 
