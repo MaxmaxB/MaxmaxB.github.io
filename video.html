@@ -8,13 +8,19 @@ name="viewport"
 content="width=1920, height=1080, initial-scale=2.4, user-scalable=no"/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" > </script>
 </head>
-<body style="margin: 0px; ">
+<body style="margin: 0px; overflow: hidden;">
         <video  style="width: 100%; height: auto;" class="op-player__media" id="video1" ></video>
 </body>
 <style>
         .op-player__play{
-                visibility: hidden;
+                display: none !important;
         }
+        
+        /* .op-player__media{
+                display: none !important;
+                height: 0px !important;
+                width: 0px !important;
+        } */
 </style>
 <script src="https://cdn.jsdelivr.net/npm/openplayerjs@latest/dist/openplayer.min.js"></script>
         <script>
@@ -36,22 +42,25 @@ var line = 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21854952015/StarhubD
                 },
                 });
             player.init();
-            //player.getMedia().load();
-            //player.play();
             player.loadAd(line);
-
-        //     setTimeout(load, 50);
             setTimeout(play, 50);
-                // player.play();
-                // player.getAd().play();
+        //     setTimeout(hide, 1000);
+        //     setTimeout(play, 150);
         
 
             function play(){
                 console.log("play");
                 // player.play();
                 // player.getAd().play();
-
                 document.getElementsByClassName("op-player__play")[0].click();
+            }
+        
+
+            function hide(){
+                console.log("hide");
+                // player.play();
+                // player.getAd().play();
+                document.getElementsByClassName("op-player__media")[0].style.display = "none"
             }
 
             function load(){
