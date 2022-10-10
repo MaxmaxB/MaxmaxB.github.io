@@ -22,9 +22,9 @@ content="width=1920, height=1080, initial-scale=2.4, user-scalable=no"/>
 var line = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpremidpostoptimizedpod&cmsid=496&vid=short_onecue&correlator='
             // Check the `API and events` link below for more options
             const player = new OpenPlayerJS('video1', {
-                ads: {
-                        src: line
-                },
+                // ads: {
+                //         src: line
+                // },
                 controls: {
                         alwaysVisible: false,
                         layers: {
@@ -39,7 +39,7 @@ var line = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096
             //player.play();
 
             setTimeout(load, 50);
-        //     setTimeout(play, 150);
+            setTimeout(play, 2000);
             
             player.getControls().getContainer().hidden = true;
 
