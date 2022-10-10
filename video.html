@@ -41,17 +41,17 @@ var line = 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21854952015/StarhubD
             player.loadAd(line);
 
         //     setTimeout(load, 50);
-        //     setTimeout(play, 50);
-                player.play();
-                player.getAd().play();
-            
-        //     player.getControls().getContainer().hidden = true;
-
+            setTimeout(play, 50);
+                // player.play();
+                // player.getAd().play();
+        
 
             function play(){
                 console.log("play");
-                player.play();
-                player.getAd().play();
+                // player.play();
+                // player.getAd().play();
+
+                document.getElementsByClassName("op-player__play")[0].click();
             }
 
             function load(){
