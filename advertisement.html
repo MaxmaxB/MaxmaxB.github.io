@@ -180,9 +180,31 @@
             }
         }
 
+        .exit-text {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+            letter-spacing: 1px;
+            animation: fadeInDelay 1.5s ease-in;
+        }
+
+        @keyframes fadeInDelay {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 768px) {
             .logo {
                 font-size: 36px;
+            }
+
+            .exit-text {
+                font-size: 14px;
             }
 
             .orb {
@@ -214,6 +236,7 @@
 
     <div class="container">
         <div class="logo">Advertisement</div>
+        <div class="exit-text">Press Back to Exit</div>
     </div>
 
     <script>
