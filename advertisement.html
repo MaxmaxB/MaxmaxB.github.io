@@ -267,6 +267,21 @@
             }
         }
 
+        const x = 20;
+        const y = 20
+        //Initialize browser plugin
+        const coolitaBrowserExtend = new QjyScript();
+        //Move virtual mouse
+        /**
+        *Qjy_SetMousePos Set virtual mouse position
+        *
+        *@ param {string} x mouse position X coordinate
+        *@ param {string} y Mouse Position Y Coordinate
+        */
+        coolitaBrowserExtend.exec("qjy_SetMousePos", "" + x, "" + y)
+        //Trigger virtual mouse click event
+        // coolitaBrowserExtend.exec("qjy_SimulateClick");
+
         createParticles();
     </script>
 </body>
