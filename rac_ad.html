@@ -59,7 +59,7 @@
 
 <body>
     <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1"></iframe>
-    <div id="counterDisplay">0</div>
+    <div id="counterDisplay">1</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
@@ -215,6 +215,19 @@
         // Handle window resize
         window.addEventListener('resize', () => {
             updateCursorPosition(cursorState.x, cursorState.y);
+        });
+
+        // Prevent iframe from stealing focus
+        iframe.addEventListener('focus', () => {
+            window.focus();
+            document.body.focus();
+        });
+
+        // Also monitor for focus changes and ensure parent window stays focused
+        window.addEventListener('blur', () => {
+            setTimeout(() => {
+                window.focus();
+            }, 0);
         });
 
         // Use a test URL that allows iframe embedding
