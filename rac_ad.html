@@ -96,8 +96,8 @@
     <div class="spinner-container hidden" id="loadingSpinner">
         <div class="spinner"></div>
     </div>
-    <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1"></iframe>
-    <div id="counterDisplay">7</div>
+    <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1" scrolling="yes"></iframe>
+    <div id="counterDisplay">8</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
@@ -137,7 +137,7 @@
         const cursorState = {
             x: window.innerWidth / 2,
             y: window.innerHeight / 2,
-            speed: 10
+            speed: 5
         };
 
         // Track which keys are currently pressed
@@ -179,34 +179,34 @@
                 if (cursorState.y <= topThreshold) {
                     const counterDisplay = document.getElementById('counterDisplay');
 
-                    // Try various QjyScript scroll methods
-                    try {
-                        coolitaBrowserExtend.exec("qjy_SendKey", "PageUp");
-                        counterDisplay.innerHTML += '<br>UP: SendKey PageUp';
-                    } catch (e) {
-                        counterDisplay.innerHTML += '<br>UP: SendKey FAILED';
-                    }
+                    // // Try various QjyScript scroll methods
+                    // try {
+                    //     coolitaBrowserExtend.exec("qjy_SendKey", "PageUp");
+                    //     counterDisplay.innerHTML += '<br>UP: SendKey PageUp';
+                    // } catch (e) {
+                    //     counterDisplay.innerHTML += '<br>UP: SendKey FAILED';
+                    // }
 
-                    try {
-                        coolitaBrowserExtend.exec("qjy_ScrollBy", "0", "-100");
-                        counterDisplay.innerHTML += '<br>UP: ScrollBy';
-                    } catch (e) {
-                        counterDisplay.innerHTML += '<br>UP: ScrollBy FAILED';
-                    }
+                    // try {
+                    //     coolitaBrowserExtend.exec("qjy_ScrollBy", "0", "-100");
+                    //     counterDisplay.innerHTML += '<br>UP: ScrollBy';
+                    // } catch (e) {
+                    //     counterDisplay.innerHTML += '<br>UP: ScrollBy FAILED';
+                    // }
 
-                    try {
-                        coolitaBrowserExtend.exec("qjy_SendMouseWheel", "up");
-                        counterDisplay.innerHTML += '<br>UP: MouseWheel';
-                    } catch (e) {
-                        counterDisplay.innerHTML += '<br>UP: MouseWheel FAILED';
-                    }
+                    // try {
+                    //     coolitaBrowserExtend.exec("qjy_SendMouseWheel", "up");
+                    //     counterDisplay.innerHTML += '<br>UP: MouseWheel';
+                    // } catch (e) {
+                    //     counterDisplay.innerHTML += '<br>UP: MouseWheel FAILED';
+                    // }
 
-                    try {
-                        coolitaBrowserExtend.exec("qjy_Scroll", "0", "-100");
-                        counterDisplay.innerHTML += '<br>UP: Scroll';
-                    } catch (e) {
-                        counterDisplay.innerHTML += '<br>UP: Scroll FAILED';
-                    }
+                    // try {
+                    //     coolitaBrowserExtend.exec("qjy_Scroll", "0", "-100");
+                    //     counterDisplay.innerHTML += '<br>UP: Scroll';
+                    // } catch (e) {
+                    //     counterDisplay.innerHTML += '<br>UP: Scroll FAILED';
+                    // }
                 } else {
                     cursorState.y -= cursorState.speed;
                     moved = true;
@@ -217,34 +217,34 @@
                 if (cursorState.y >= window.innerHeight - bottomThreshold) {
                     const counterDisplay = document.getElementById('counterDisplay');
 
-                    // Try various QjyScript scroll methods
-                    try {
-                        coolitaBrowserExtend.exec("qjy_SendKey", "PageDown");
-                        counterDisplay.innerHTML += '<br>DOWN: SendKey PageDown';
-                    } catch (e) {
-                        counterDisplay.innerHTML += '<br>DOWN: SendKey FAILED';
-                    }
+                    // // Try various QjyScript scroll methods
+                    // try {
+                    //     coolitaBrowserExtend.exec("qjy_SendKey", "PageDown");
+                    //     counterDisplay.innerHTML += '<br>DOWN: SendKey PageDown';
+                    // } catch (e) {
+                    //     counterDisplay.innerHTML += '<br>DOWN: SendKey FAILED';
+                    // }
 
-                    try {
-                        coolitaBrowserExtend.exec("qjy_ScrollBy", "0", "100");
-                        counterDisplay.innerHTML += '<br>DOWN: ScrollBy';
-                    } catch (e) {
-                        counterDisplay.innerHTML += '<br>DOWN: ScrollBy FAILED';
-                    }
+                    // try {
+                    //     coolitaBrowserExtend.exec("qjy_ScrollBy", "0", "100");
+                    //     counterDisplay.innerHTML += '<br>DOWN: ScrollBy';
+                    // } catch (e) {
+                    //     counterDisplay.innerHTML += '<br>DOWN: ScrollBy FAILED';
+                    // }
 
-                    try {
-                        coolitaBrowserExtend.exec("qjy_SendMouseWheel", "down");
-                        counterDisplay.innerHTML += '<br>DOWN: MouseWheel';
-                    } catch (e) {
-                        counterDisplay.innerHTML += '<br>DOWN: MouseWheel FAILED';
-                    }
+                    // try {
+                    //     coolitaBrowserExtend.exec("qjy_SendMouseWheel", "down");
+                    //     counterDisplay.innerHTML += '<br>DOWN: MouseWheel';
+                    // } catch (e) {
+                    //     counterDisplay.innerHTML += '<br>DOWN: MouseWheel FAILED';
+                    // }
 
-                    try {
-                        coolitaBrowserExtend.exec("qjy_Scroll", "0", "100");
-                        counterDisplay.innerHTML += '<br>DOWN: Scroll';
-                    } catch (e) {
-                        counterDisplay.innerHTML += '<br>DOWN: Scroll FAILED';
-                    }
+                    // try {
+                    //     coolitaBrowserExtend.exec("qjy_Scroll", "0", "100");
+                    //     counterDisplay.innerHTML += '<br>DOWN: Scroll';
+                    // } catch (e) {
+                    //     counterDisplay.innerHTML += '<br>DOWN: Scroll FAILED';
+                    // }
                 } else {
                     cursorState.y += cursorState.speed;
                     moved = true;
