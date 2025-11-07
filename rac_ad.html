@@ -50,7 +50,7 @@
 
         iframe {
             width: 100%;
-            height: 5000px;
+            height: auto;
             min-height: 100vh;
             border: none;
             background-color: #1a1a1a;
@@ -97,7 +97,7 @@
         <div class="spinner"></div>
     </div>
     <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1" scrolling="yes"></iframe>
-    <div id="counterDisplay">10</div>
+    <div id="counterDisplay">11</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
@@ -223,6 +223,12 @@
             if (keyName === "Backspace") {
                 event.preventDefault();
                 window.history.back();
+                return;
+            }
+            if (keyName === "Home") {
+                event.preventDefault();
+                // window.history.go(-window.history.length);
+                window.close();
                 return;
             }
 
