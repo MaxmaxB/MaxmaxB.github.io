@@ -51,6 +51,7 @@
         iframe {
             width: 100%;
             height: auto;
+            overflow: hidden;
             min-height: 100vh;
             border: none;
             background-color: #1a1a1a;
@@ -60,8 +61,8 @@
 </head>
 
 <body>
-    <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1" scrolling="yes"></iframe>
-    <div id="counterDisplay">12</div>
+    <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1" scrolling="no"></iframe>
+    <div id="counterDisplay">13</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
@@ -71,6 +72,35 @@
         if (typeof QjyScript !== 'undefined') {
             coolitaBrowserExtend = new QjyScript();
             console.log('QjyScript initialized - TV remote mode');
+
+            // Create full-screen source code overlay
+            const sourceOverlay = document.createElement('div');
+            sourceOverlay.id = 'sourceOverlay';
+            sourceOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.98);color:#00ff00;padding:20px;font-family:monospace;font-size:14px;overflow:auto;z-index:999997;white-space:pre-wrap;word-wrap:break-word;';
+
+            let sourceCode = '=== QjyScript Constructor Source Code ===\n\n';
+            sourceCode += QjyScript.toString() + '\n\n';
+
+            sourceCode += '=== QjyScript Prototype Methods ===\n\n';
+            const proto = QjyScript.prototype;
+            for (let key in proto) {
+                if (typeof proto[key] === 'function') {
+                    sourceCode += `\n--- ${key} ---\n`;
+                    sourceCode += proto[key].toString() + '\n';
+                }
+            }
+
+            // Also check for static methods
+            sourceCode += '\n=== QjyScript Static Methods ===\n\n';
+            for (let key in QjyScript) {
+                if (typeof QjyScript[key] === 'function' && key !== 'prototype') {
+                    sourceCode += `\n--- ${key} ---\n`;
+                    sourceCode += QjyScript[key].toString() + '\n';
+                }
+            }
+
+            sourceOverlay.textContent = sourceCode;
+            document.body.appendChild(sourceOverlay);
         } else {
             // Mock QjyScript for browser testing
             coolitaBrowserExtend = {
@@ -126,162 +156,6 @@
         // Scroll amount in pixels
         const scrollAmount = 50;
 
-        // Comprehensive QjyScript scroll simulation function
-        function qjyScrollPage(amount) {
-            // Try multiple QjyScript methods to simulate scrolling
-
-            // Method 1: Direct scroll by amount
-            try {
-                coolitaBrowserExtend.exec("qjy_ScrollBy", "0", amount.toString());
-            } catch (e) {
-                console.log('qjy_ScrollBy failed:', e);
-            }
-
-            // Method 2: Alternative direct scroll command
-            try {
-                coolitaBrowserExtend.exec("qjy_Scroll", "0", amount.toString());
-            } catch (e) {
-                console.log('qjy_Scroll failed:', e);
-            }
-
-            // Method 3: Mouse wheel simulation
-            try {
-                coolitaBrowserExtend.exec("qjy_SimulateWheel", amount.toString());
-            } catch (e) {
-                console.log('qjy_SimulateWheel failed:', e);
-            }
-
-            // Method 4: Alternative mouse wheel
-            try {
-                coolitaBrowserExtend.exec("qjy_MouseWheel", "0", amount.toString());
-            } catch (e) {
-                console.log('qjy_MouseWheel failed:', e);
-            }
-
-            // Method 5: Keyboard simulation (PageDown/PageUp)
-            try {
-                const key = amount > 0 ? "PageDown" : "PageUp";
-                coolitaBrowserExtend.exec("qjy_SimulateKey", key);
-            } catch (e) {
-                console.log('qjy_SimulateKey failed:', e);
-            }
-
-            // Method 6: Window-specific scroll
-            try {
-                coolitaBrowserExtend.exec("qjy_ScrollWindow", "0", amount.toString());
-            } catch (e) {
-                console.log('qjy_ScrollWindow failed:', e);
-            }
-
-            // Method 7: Set scroll position (get current + add amount)
-            try {
-                const newScrollY = window.scrollY + amount;
-                coolitaBrowserExtend.exec("qjy_SetScrollPos", "0", newScrollY.toString());
-            } catch (e) {
-                console.log('qjy_SetScrollPos failed:', e);
-            }
-
-            // Method 8: Alternative scroll position setting
-            try {
-                const newScrollY = window.scrollY + amount;
-                coolitaBrowserExtend.exec("qjy_SetScrollPosition", "0", newScrollY.toString());
-            } catch (e) {
-                console.log('qjy_SetScrollPosition failed:', e);
-            }
-
-            // Method 9: Execute JavaScript directly
-            try {
-                coolitaBrowserExtend.exec("qjy_ExecuteJS", `window.scrollBy(0, ${amount})`);
-            } catch (e) {
-                console.log('qjy_ExecuteJS failed:', e);
-            }
-
-            // Method 10: Alternative JS execution
-            try {
-                coolitaBrowserExtend.exec("qjy_Eval", `window.scrollBy(0, ${amount})`);
-            } catch (e) {
-                console.log('qjy_Eval failed:', e);
-            }
-
-            // Method 11: Touch gesture simulation (swipe)
-            try {
-                const direction = amount > 0 ? "up" : "down";
-                coolitaBrowserExtend.exec("qjy_SimulateSwipe", direction, Math.abs(amount).toString());
-            } catch (e) {
-                console.log('qjy_SimulateSwipe failed:', e);
-            }
-
-            // Method 12: Touch event simulation
-            try {
-                const startY = window.innerHeight / 2;
-                const endY = startY - amount;
-                coolitaBrowserExtend.exec("qjy_SimulateTouch", "drag", "0", startY.toString(), "0", endY.toString());
-            } catch (e) {
-                console.log('qjy_SimulateTouch failed:', e);
-            }
-
-            // Method 13: Scroll element by ID/selector
-            try {
-                coolitaBrowserExtend.exec("qjy_ScrollElement", "body", "0", amount.toString());
-            } catch (e) {
-                console.log('qjy_ScrollElement body failed:', e);
-            }
-
-            // Method 14: Scroll html element
-            try {
-                coolitaBrowserExtend.exec("qjy_ScrollElement", "html", "0", amount.toString());
-            } catch (e) {
-                console.log('qjy_ScrollElement html failed:', e);
-            }
-
-            // Method 15: Trigger scroll event manually
-            try {
-                coolitaBrowserExtend.exec("qjy_TriggerEvent", "scroll", amount.toString());
-            } catch (e) {
-                console.log('qjy_TriggerEvent failed:', e);
-            }
-
-            // Method 16: Dispatch wheel event
-            try {
-                coolitaBrowserExtend.exec("qjy_DispatchEvent", "wheel", `{"deltaY": ${amount}}`);
-            } catch (e) {
-                console.log('qjy_DispatchEvent failed:', e);
-            }
-
-            // Method 17: Simulate arrow key multiple times
-            try {
-                const key = amount > 0 ? "ArrowDown" : "ArrowUp";
-                const times = Math.floor(Math.abs(amount) / 10);
-                for (let i = 0; i < times; i++) {
-                    coolitaBrowserExtend.exec("qjy_SimulateKey", key);
-                }
-            } catch (e) {
-                console.log('qjy_SimulateKey ArrowDown/Up failed:', e);
-            }
-
-            // Method 18: Direct scroll command with y parameter
-            try {
-                coolitaBrowserExtend.exec("qjy_Scroll", "y", amount.toString());
-            } catch (e) {
-                console.log('qjy_Scroll y failed:', e);
-            }
-
-            // Method 19: Scroll with animation flag
-            try {
-                coolitaBrowserExtend.exec("qjy_ScrollBy", "0", amount.toString(), "smooth");
-            } catch (e) {
-                console.log('qjy_ScrollBy smooth failed:', e);
-            }
-
-            // Method 20: Execute window.scroll with current position
-            try {
-                const newScrollY = window.scrollY + amount;
-                coolitaBrowserExtend.exec("qjy_ExecuteJS", `window.scroll(0, ${newScrollY})`);
-            } catch (e) {
-                console.log('qjy_ExecuteJS scroll failed:', e);
-            }
-        }
-
         // Animation loop for continuous movement
         function animateCursor() {
             let moved = false;
@@ -291,8 +165,8 @@
             if (keysPressed.ArrowUp) {
                 // Check if cursor is at the top of the screen
                 if (cursorState.y <= topThreshold) {
-                    // Scroll main page up
-                    qjyScrollPage(-scrollAmount);
+                    window.scrollBy(0, -scrollAmount);
+                    console.log("scroll up")
                 } else {
                     cursorState.y -= cursorState.speed;
                     moved = true;
@@ -301,8 +175,8 @@
             if (keysPressed.ArrowDown) {
                 // Check if cursor is at the bottom of the screen
                 if (cursorState.y >= window.innerHeight - bottomThreshold) {
-                    // Scroll main page down
-                    qjyScrollPage(scrollAmount);
+                    window.scrollBy(0, scrollAmount);
+                    console.log("scroll down")
                 } else {
                     cursorState.y += cursorState.speed;
                     moved = true;
@@ -331,7 +205,7 @@
         document.addEventListener('keydown', (event) => {
             const keyName = event.key;
             const counterDisplay = document.getElementById('counterDisplay');
-            counterDisplay.innerHTML += '<br>' + keyName;
+            // counterDisplay.innerHTML += '<br>' + keyName;
 
             // Handle backspace
             if (keyName === "Backspace") {
