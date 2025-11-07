@@ -17,6 +17,7 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
+            background-color: #1a1a1a;
         }
 
         #remoteCursor {
@@ -53,16 +54,59 @@
             width: 100%;
             height: 100%;
             border: none;
+            background-color: #1a1a1a;
+        }
+
+        /* Loading spinner */
+        .spinner-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1a1a1a;
+            z-index: 999999;
+        }
+
+        .spinner-container.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 
 <body>
+    <div class="spinner-container" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
     <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1"></iframe>
     <div id="counterDisplay">1</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+
+        // Hide spinner when iframe loads
+        iframe.addEventListener('load', () => {
+            loadingSpinner.classList.add('hidden');
+        });
 
         // Check if QjyScript is available, otherwise create a mock for testing
         let coolitaBrowserExtend;
