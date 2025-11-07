@@ -12,7 +12,8 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
             width: 100%;
             overflow: hidden;
@@ -20,16 +21,18 @@
 
         #remoteCursor {
             position: fixed;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.9);
-            border: 3px solid #4CAF50;
-            box-shadow: 0 0 10px rgba(76, 175, 80, 0.8), 0 0 20px rgba(76, 175, 80, 0.4);
+            width: 40px;
+            height: 40px;
             pointer-events: none;
             z-index: 999999;
-            transform: translate(-50%, -50%);
+            transform: translate(0, 0);
             transition: none;
+            filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+        }
+
+        #remoteCursor svg {
+            width: 100%;
+            height: 100%;
         }
 
         iframe {
@@ -61,16 +64,21 @@
             console.log('QjyScript not available - using mock for browser testing');
         }
 
-        // Create visible cursor element
+        // Create visible cursor element with embedded SVG
         const cursor = document.createElement('div');
         cursor.id = 'remoteCursor';
+        cursor.innerHTML = `
+            <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <path style="stroke:#111;stroke-width:4;fill:#ddd;" d="M 5,5 90,30 65,50 95,80 80,95 50,65 30,90 z"/>
+            </svg>
+        `;
         document.body.appendChild(cursor);
 
         // Cursor state
         const cursorState = {
             x: window.innerWidth / 2,
             y: window.innerHeight - 50,
-            speed: 25
+            speed: 15
         };
 
         // Track which keys are currently pressed
@@ -87,16 +95,19 @@
             cursorState.x = Math.max(0, Math.min(window.innerWidth, x));
             cursorState.y = Math.max(0, Math.min(window.innerHeight, y));
 
-            // Update visible cursor
+            // Update visible cursor (SVG cursor positioned from top-left at 5,5 in viewBox)
             cursor.style.left = cursorState.x + 'px';
             cursor.style.top = cursorState.y + 'px';
 
-            // Update QjyScript virtual mouse position
+            // Update QjyScript virtual mouse position (use tip of cursor)
             coolitaBrowserExtend.exec("qjy_SetMousePos", "" + Math.round(cursorState.x), "" + Math.round(cursorState.y));
         }
 
         // Initialize cursor at bottom-center of screen
         updateCursorPosition(cursorState.x, cursorState.y);
+
+        // Scroll amount in pixels
+        const scrollAmount = 50;
 
         // Animation loop for continuous movement
         function animateCursor() {
@@ -107,8 +118,12 @@
             if (keysPressed.ArrowUp) {
                 // Check if cursor is at the top of the screen
                 if (cursorState.y <= topThreshold) {
-                    // Simulate scroll up by mouse wheel
-                    coolitaBrowserExtend.exec("qjy_SimulateMouseWheel", "120"); // Positive value scrolls up
+                    // Scroll iframe content up
+                    try {
+                        iframe.contentWindow.scrollBy(0, -scrollAmount);
+                    } catch (e) {
+                        console.log('Cannot access iframe content (CORS)');
+                    }
                 } else {
                     cursorState.y -= cursorState.speed;
                     moved = true;
@@ -117,8 +132,12 @@
             if (keysPressed.ArrowDown) {
                 // Check if cursor is at the bottom of the screen
                 if (cursorState.y >= window.innerHeight - bottomThreshold) {
-                    // Simulate scroll down by mouse wheel
-                    coolitaBrowserExtend.exec("qjy_SimulateMouseWheel", "-120"); // Negative value scrolls down
+                    // Scroll iframe content down
+                    try {
+                        iframe.contentWindow.scrollBy(0, scrollAmount);
+                    } catch (e) {
+                        console.log('Cannot access iframe content (CORS)');
+                    }
                 } else {
                     cursorState.y += cursorState.speed;
                     moved = true;
