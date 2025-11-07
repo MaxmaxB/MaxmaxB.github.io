@@ -62,7 +62,7 @@
 
 <body>
     <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1" scrolling="no"></iframe>
-    <div id="counterDisplay">13</div>
+    <div id="counterDisplay">14</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
@@ -78,25 +78,57 @@
             sourceOverlay.id = 'sourceOverlay';
             sourceOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.98);color:#00ff00;padding:20px;font-family:monospace;font-size:14px;overflow:auto;z-index:999997;white-space:pre-wrap;word-wrap:break-word;';
 
-            let sourceCode = '=== QjyScript Constructor Source Code ===\n\n';
+            let sourceCode = '=== QjyScript Analysis ===\n';
+            sourceCode += 'NOTE: [native code] means the function is implemented in C/C++ by the TV platform.\n';
+            sourceCode += 'The actual implementation cannot be viewed from JavaScript.\n\n';
+
+            sourceCode += '=== QjyScript Constructor ===\n\n';
             sourceCode += QjyScript.toString() + '\n\n';
 
-            sourceCode += '=== QjyScript Prototype Methods ===\n\n';
+            sourceCode += '=== Instance Properties & Methods ===\n\n';
+            for (let key in coolitaBrowserExtend) {
+                const value = coolitaBrowserExtend[key];
+                const type = typeof value;
+                sourceCode += `${key}: ${type}`;
+                if (type === 'function') {
+                    sourceCode += ` (arity: ${value.length})`;
+                    sourceCode += `\n  ${value.toString()}\n`;
+                } else {
+                    sourceCode += ` = ${JSON.stringify(value)}\n`;
+                }
+                sourceCode += '\n';
+            }
+
+            sourceCode += '=== Prototype Methods ===\n\n';
             const proto = QjyScript.prototype;
             for (let key in proto) {
                 if (typeof proto[key] === 'function') {
-                    sourceCode += `\n--- ${key} ---\n`;
-                    sourceCode += proto[key].toString() + '\n';
+                    sourceCode += `${key} (arity: ${proto[key].length})\n`;
+                    sourceCode += `  ${proto[key].toString()}\n\n`;
                 }
             }
 
-            // Also check for static methods
-            sourceCode += '\n=== QjyScript Static Methods ===\n\n';
+            sourceCode += '=== Static Methods & Properties ===\n\n';
             for (let key in QjyScript) {
-                if (typeof QjyScript[key] === 'function' && key !== 'prototype') {
-                    sourceCode += `\n--- ${key} ---\n`;
-                    sourceCode += QjyScript[key].toString() + '\n';
+                if (key !== 'prototype') {
+                    const value = QjyScript[key];
+                    const type = typeof value;
+                    sourceCode += `${key}: ${type}`;
+                    if (type === 'function') {
+                        sourceCode += ` (arity: ${value.length})`;
+                        sourceCode += `\n  ${value.toString()}\n`;
+                    } else {
+                        sourceCode += ` = ${JSON.stringify(value)}\n`;
+                    }
+                    sourceCode += '\n';
                 }
+            }
+
+            // Try to get all property descriptors
+            sourceCode += '=== Property Descriptors (Own Properties) ===\n\n';
+            const descriptors = Object.getOwnPropertyDescriptors(coolitaBrowserExtend);
+            for (let key in descriptors) {
+                sourceCode += `${key}: ${JSON.stringify(descriptors[key], null, 2)}\n\n`;
             }
 
             sourceOverlay.textContent = sourceCode;
