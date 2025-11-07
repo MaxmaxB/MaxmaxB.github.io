@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoppr TV - Transform Your TV Advertising</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        #remoteCursor {
+            position: fixed;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.8), 0 0 20px rgba(76, 175, 80, 0.4);
+            pointer-events: none;
+            z-index: 999999;
+            transform: translate(-50%, -50%);
+            transition: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+
+    <script>
+        const iframe = document.getElementById("adFrame");
+
+        // Check if QjyScript is available, otherwise create a mock for testing
+        let coolitaBrowserExtend;
+        if (typeof QjyScript !== 'undefined') {
+            coolitaBrowserExtend = new QjyScript();
+            console.log('QjyScript initialized - TV remote mode');
+        } else {
+            // Mock QjyScript for browser testing
+            coolitaBrowserExtend = {
+                exec: function (command, ...args) {
+                    console.log('QjyScript Mock:', command, args);
+                }
+            };
+            console.log('QjyScript not available - using mock for browser testing');
+        }
+
+        // Create visible cursor element
+        const cursor = document.createElement('div');
+        cursor.id = 'remoteCursor';
+        document.body.appendChild(cursor);
+
+        // Cursor state
+        const cursorState = {
+            x: window.innerWidth / 2,
+            y: window.innerHeight - 50,
+            speed: 25
+        };
+
+        // Track which keys are currently pressed
+        const keysPressed = {
+            ArrowUp: false,
+            ArrowDown: false,
+            ArrowLeft: false,
+            ArrowRight: false
+        };
+
+        // Update cursor position (both visible and virtual)
+        function updateCursorPosition(x, y) {
+            // Apply boundary checking
+            cursorState.x = Math.max(0, Math.min(window.innerWidth, x));
+            cursorState.y = Math.max(0, Math.min(window.innerHeight, y));
+
+            // Update visible cursor
+            cursor.style.left = cursorState.x + 'px';
+            cursor.style.top = cursorState.y + 'px';
+
+            // Update QjyScript virtual mouse position
+            coolitaBrowserExtend.exec("qjy_SetMousePos", "" + Math.round(cursorState.x), "" + Math.round(cursorState.y));
+        }
+
+        // Initialize cursor at bottom-center of screen
+        updateCursorPosition(cursorState.x, cursorState.y);
+
+        // Animation loop for continuous movement
+        function animateCursor() {
+            let moved = false;
+
+            if (keysPressed.ArrowUp) {
+                cursorState.y -= cursorState.speed;
+                moved = true;
+            }
+            if (keysPressed.ArrowDown) {
+                cursorState.y += cursorState.speed;
+                moved = true;
+            }
+            if (keysPressed.ArrowLeft) {
+                cursorState.x -= cursorState.speed;
+                moved = true;
+            }
+            if (keysPressed.ArrowRight) {
+                cursorState.x += cursorState.speed;
+                moved = true;
+            }
+
+            if (moved) {
+                updateCursorPosition(cursorState.x, cursorState.y);
+            }
+
+            requestAnimationFrame(animateCursor);
+        }
+
+        // Start animation loop
+        animateCursor();
+
+        // Handle key down events
+        document.addEventListener('keydown', (event) => {
+            const keyName = event.key;
+
+            // Handle backspace
+            if (keyName === "Backspace") {
+                event.preventDefault();
+                window.history.back();
+                return;
+            }
+
+            // Handle Enter key for clicking
+            if (keyName === "Enter") {
+                event.preventDefault();
+                coolitaBrowserExtend.exec("qjy_SimulateClick");
+                return;
+            }
+
+            // Handle arrow keys
+            if (keyName in keysPressed) {
+                event.preventDefault();
+                keysPressed[keyName] = true;
+            }
+        });
+
+        // Handle key up events
+        document.addEventListener('keyup', (event) => {
+            const keyName = event.key;
+
+            if (keyName in keysPressed) {
+                event.preventDefault();
+                keysPressed[keyName] = false;
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            updateCursorPosition(cursorState.x, cursorState.y);
+        });
+
+        // Use a test URL that allows iframe embedding
+        // When deploying to TV, replace this with the actual RAC URL
+        // iframe.src = "advertisement.html"  // Local test page
+        iframe.src = "https://rac.com.au/products/insurance?utm_content=&gclsrc=aw.ds&gad_source=1&gad_campaignid=23027471472&gbraid=0AAAAADnUn4xZy7RTLOzUun_fmDG8iGooN&gclid=Cj0KCQiAq7HIBhDoARIsAOATDxCl6UoH4UbZp1VehexS2eBJzqHc0cj-3NrwcdM6KZB-oN0lI6mtfkIaAsB1EALw_wcB"
+    </script>
+</body>
+
+</html>
