@@ -101,14 +101,28 @@
         // Animation loop for continuous movement
         function animateCursor() {
             let moved = false;
+            const bottomThreshold = 50; // Pixels from bottom to trigger scroll
+            const topThreshold = 50; // Pixels from top to trigger scroll
 
             if (keysPressed.ArrowUp) {
-                cursorState.y -= cursorState.speed;
-                moved = true;
+                // Check if cursor is at the top of the screen
+                if (cursorState.y <= topThreshold) {
+                    // Simulate scroll up by mouse wheel
+                    coolitaBrowserExtend.exec("qjy_SimulateMouseWheel", "120"); // Positive value scrolls up
+                } else {
+                    cursorState.y -= cursorState.speed;
+                    moved = true;
+                }
             }
             if (keysPressed.ArrowDown) {
-                cursorState.y += cursorState.speed;
-                moved = true;
+                // Check if cursor is at the bottom of the screen
+                if (cursorState.y >= window.innerHeight - bottomThreshold) {
+                    // Simulate scroll down by mouse wheel
+                    coolitaBrowserExtend.exec("qjy_SimulateMouseWheel", "-120"); // Negative value scrolls down
+                } else {
+                    cursorState.y += cursorState.speed;
+                    moved = true;
+                }
             }
             if (keysPressed.ArrowLeft) {
                 cursorState.x -= cursorState.speed;
