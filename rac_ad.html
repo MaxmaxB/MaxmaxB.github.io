@@ -62,7 +62,7 @@
 
 <body>
     <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1" scrolling="no"></iframe>
-    <div id="counterDisplay">15</div>
+    <div id="counterDisplay">16</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
@@ -135,33 +135,33 @@
 
             if (keysPressed.ArrowUp) {
                 // Check if cursor is at the top of the screen
-                if (cursorState.y <= topThreshold) {
-                    try {
-                        iframe.contentWindow.scrollBy(0, -scrollAmount);
-                    } catch (e) {
-                        const counterDisplay = document.getElementById('counterDisplay');
-                        counterDisplay.innerHTML += '<br> Error: ' + e.message
-                    }
-                    console.log("scroll up")
-                } else {
-                    cursorState.y -= cursorState.speed;
-                    moved = true;
-                }
+                // if (cursorState.y <= topThreshold) {
+                //     try {
+                //         iframe.contentWindow.scrollBy(0, -scrollAmount);
+                //     } catch (e) {
+                //         const counterDisplay = document.getElementById('counterDisplay');
+                //         counterDisplay.innerHTML += '<br> Error: ' + e.message
+                //     }
+                //     console.log("scroll up")
+                // } else {
+                cursorState.y -= cursorState.speed;
+                moved = true;
+                // }
             }
             if (keysPressed.ArrowDown) {
                 // Check if cursor is at the bottom of the screen
-                if (cursorState.y >= window.innerHeight - bottomThreshold) {
-                    try {
-                        iframe.contentWindow.scrollBy(0, scrollAmount);
-                    } catch (e) {
-                        const counterDisplay = document.getElementById('counterDisplay');
-                        counterDisplay.innerHTML += '<br> Error: ' + e.message
-                    }
-                    console.log("scroll down")
-                } else {
-                    cursorState.y += cursorState.speed;
-                    moved = true;
-                }
+                // if (cursorState.y >= window.innerHeight - bottomThreshold) {
+                //     try {
+                //         iframe.contentWindow.scrollBy(0, scrollAmount);
+                //     } catch (e) {
+                //         const counterDisplay = document.getElementById('counterDisplay');
+                //         counterDisplay.innerHTML += '<br> Error: ' + e.message
+                //     }
+                //     console.log("scroll down")
+                // } else {
+                cursorState.y += cursorState.speed;
+                moved = true;
+                // }
             }
             if (keysPressed.ArrowLeft) {
                 cursorState.x -= cursorState.speed;
