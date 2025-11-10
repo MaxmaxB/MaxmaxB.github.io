@@ -53,6 +53,7 @@
             height: auto;
             overflow: hidden;
             min-height: 100vh;
+            min-width: 100vw;
             border: none;
             background-color: #1a1a1a;
             display: block;
@@ -62,7 +63,7 @@
 
 <body>
     <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1" scrolling="yes"></iframe>
-    <div id="counterDisplay">18</div>
+    <div id="counterDisplay">19</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
@@ -111,7 +112,8 @@
         function updateCursorPosition(x, y) {
             // Apply boundary checking (only horizontal)
             cursorState.x = Math.max(0, Math.min(window.innerWidth, x));
-            cursorState.y = y;
+            cursorState.y = Math.max(0, Math.min(window.innerHeight, y));
+            // cursorState.y = y;
 
             // Update visible cursor (SVG cursor positioned from top-left at 5,5 in viewBox)
             cursor.style.left = cursorState.x + 'px';
@@ -137,7 +139,7 @@
                 // Check if cursor is at the top of the screen
                 // if (cursorState.y <= topThreshold) {
                 //     try {
-                //         iframe.contentWindow.scrollBy(0, -scrollAmount);
+                //         window.scrollBy(0, -scrollAmount);
                 //     } catch (e) {
                 //         const counterDisplay = document.getElementById('counterDisplay');
                 //         counterDisplay.innerHTML += '<br> Error: ' + e.message
@@ -148,11 +150,12 @@
                 moved = true;
                 // }
             }
+
             if (keysPressed.ArrowDown) {
                 // Check if cursor is at the bottom of the screen
                 // if (cursorState.y >= window.innerHeight - bottomThreshold) {
                 //     try {
-                //         iframe.contentWindow.scrollBy(0, scrollAmount);
+                //         window.scrollBy(0, scrollAmount);
                 //     } catch (e) {
                 //         const counterDisplay = document.getElementById('counterDisplay');
                 //         counterDisplay.innerHTML += '<br> Error: ' + e.message
@@ -163,10 +166,12 @@
                 moved = true;
                 // }
             }
+
             if (keysPressed.ArrowLeft) {
                 cursorState.x -= cursorState.speed;
                 moved = true;
             }
+
             if (keysPressed.ArrowRight) {
                 cursorState.x += cursorState.speed;
                 moved = true;
@@ -211,7 +216,7 @@
 
             // Handle arrow keys
             if (keyName in keysPressed) {
-                event.preventDefault();
+                // event.preventDefault();
                 keysPressed[keyName] = true;
             }
         });
@@ -221,7 +226,7 @@
             const keyName = event.key;
 
             if (keyName in keysPressed) {
-                event.preventDefault();
+                // event.preventDefault();
                 keysPressed[keyName] = false;
             }
         });
