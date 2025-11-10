@@ -14,7 +14,8 @@
 
         html,
         body {
-            width: 100%;
+            width: 100vw;
+            height: 100vh;
             background-color: #1a1a1a;
         }
 
@@ -49,11 +50,9 @@
         }
 
         iframe {
-            width: 100%;
+            width: 100vw;
             height: auto;
-            /* overflow: hidden; */
             min-height: 100vh;
-            min-width: 100vw;
             border: none;
             background-color: #1a1a1a;
             display: block;
@@ -64,7 +63,7 @@
 
 <body>
     <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" scrolling="yes"></iframe>
-    <div id="counterDisplay">20</div>
+    <div id="counterDisplay">21</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
@@ -139,13 +138,28 @@
             if (keysPressed.ArrowUp) {
                 // Check if cursor is at the top of the screen
                 if (cursorState.y <= topThreshold) {
-                    try {
-                        window.scrollBy(0, -scrollAmount);
-                    } catch (e) {
-                        const counterDisplay = document.getElementById('counterDisplay');
-                        counterDisplay.innerHTML += '<br> Error: ' + e.message
-                    }
-                    console.log("scroll up")
+                    // Try simulating Page Up key press
+                    coolitaBrowserExtend.exec("qjy_SimulateKeyPress", "33"); // Page Up keycode
+                    console.log("scroll up - simulating Page Up");
+
+                    // Create a real wheel event
+                    const wheelEvent = new WheelEvent('wheel', {
+                        deltaY: 100,
+                        deltaMode: 0, // DOM_DELTA_PIXEL
+                        clientX: cursorState.x,
+                        clientY: cursorState.y,
+                        bubbles: true,
+                        cancelable: true,
+                        view: window
+                    });
+
+
+                    // Also try on document
+                    document.dispatchEvent(wheelEvent);
+                    // Dispatch to iframe
+                    iframe.dispatchEvent(wheelEvent);
+
+                    console.log("scroll down - wheel event dispatched");
                 } else {
                     cursorState.y -= cursorState.speed;
                     moved = true;
@@ -155,14 +169,9 @@
             if (keysPressed.ArrowDown) {
                 // Check if cursor is at the bottom of the screen
                 if (cursorState.y >= window.innerHeight - bottomThreshold) {
-                    try {
-                        // window.scrollBy(0, scrollAmount);
-                        coolitaBrowserExtend.exec("qjy_SimulateWheelDown");
-                    } catch (e) {
-                        const counterDisplay = document.getElementById('counterDisplay');
-                        counterDisplay.innerHTML += '<br> Error: ' + e.message
-                    }
-                    console.log("scroll down")
+                    // Try simulating Page Down key press
+                    coolitaBrowserExtend.exec("qjy_SimulateKeyPress", "34"); // Page Down keycode
+                    console.log("scroll down - simulating Page Down");
                 } else {
                     cursorState.y += cursorState.speed;
                     moved = true;
