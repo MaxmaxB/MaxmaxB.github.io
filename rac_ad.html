@@ -62,7 +62,7 @@
 
 <body>
     <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" tabindex="-1" scrolling="yes"></iframe>
-    <div id="counterDisplay">17</div>
+    <div id="counterDisplay">18</div>
 
     <script>
         const iframe = document.getElementById("adFrame");
@@ -109,9 +109,9 @@
 
         // Update cursor position (both visible and virtual)
         function updateCursorPosition(x, y) {
-            // Apply boundary checking
+            // Apply boundary checking (only horizontal)
             cursorState.x = Math.max(0, Math.min(window.innerWidth, x));
-            cursorState.y = Math.max(0, Math.min(window.innerHeight, y));
+            cursorState.y = y;
 
             // Update visible cursor (SVG cursor positioned from top-left at 5,5 in viewBox)
             cursor.style.left = cursorState.x + 'px';
