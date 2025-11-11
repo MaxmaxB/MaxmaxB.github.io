@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoppr TV - Transform Your TV Advertising</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: #1a1a1a;
+        }
+
+        #remoteCursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 999999;
+            transform: translate(0, 0);
+            transition: none;
+            filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+        }
+
+        #remoteCursor svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        #counterDisplay {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: black;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 5px;
+            z-index: 999998;
+            font-family: Arial, sans-serif;
+            display: none;
+        }
+
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            min-height: 100vh;
+            border: none;
+            background-color: #1a1a1a;
+            display: block;
+            overflow: scroll;
+        }
+    </style>
+</head>
+
+<body>
+    <iframe id="adFrame" frameborder="0" marginheight="0" marginwidth="0" scrolling="yes"></iframe>
+    <div id="counterDisplay">21</div>
+
+    <script>
+        const iframe = document.getElementById("adFrame");
+
+        // Check if QjyScript is available, otherwise create a mock for testing
+        let coolitaBrowserExtend;
+        if (typeof QjyScript !== 'undefined') {
+            coolitaBrowserExtend = new QjyScript();
+            console.log('QjyScript initialized - TV remote mode');
+        } else {
+            // Mock QjyScript for browser testing
+            coolitaBrowserExtend = {
+                exec: function (command, ...args) {
+                    console.log('QjyScript Mock:', command, args);
+                }
+            };
+            console.log('QjyScript not available - using mock for browser testing');
+        }
+
+        // Create visible cursor element with embedded SVG
+        const cursor = document.createElement('div');
+        cursor.id = 'remoteCursor';
+        cursor.innerHTML = `
+            <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <path style="stroke:#111;stroke-width:4;fill:#ddd;" d="M 5,5 90,30 65,50 95,80 80,95 50,65 30,90 z"/>
+            </svg>
+        `;
+        document.body.appendChild(cursor);
+
+        // Cursor state
+        const cursorState = {
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            speed: 5
+        };
+
+        // Track which keys are currently pressed
+        const keysPressed = {
+            ArrowUp: false,
+            ArrowDown: false,
+            ArrowLeft: false,
+            ArrowRight: false
+        };
+
+        // Update cursor position (both visible and virtual)
+        function updateCursorPosition(x, y) {
+            // Apply boundary checking (only horizontal)
+            cursorState.x = Math.max(0, Math.min(window.innerWidth, x));
+            cursorState.y = Math.max(0, Math.min(window.innerHeight, y));
+            // cursorState.y = y;
+
+            // Update visible cursor (SVG cursor positioned from top-left at 5,5 in viewBox)
+            cursor.style.left = cursorState.x + 'px';
+            cursor.style.top = cursorState.y + 'px';
+
+            // Update QjyScript virtual mouse position (use tip of cursor)
+            coolitaBrowserExtend.exec("qjy_SetMousePos", "" + Math.round(cursorState.x), "" + Math.round(cursorState.y));
+        }
+
+        // Initialize cursor at bottom-center of screen
+        updateCursorPosition(cursorState.x, cursorState.y);
+
+        // Scroll amount in pixels
+        const scrollAmount = 50;
+
+        // Animation loop for continuous movement
+        function animateCursor() {
+            let moved = false;
+            const bottomThreshold = 10; // Pixels from bottom to trigger scroll
+            const topThreshold = 0; // Pixels from top to trigger scroll
+
+            if (keysPressed.ArrowUp) {
+                // Check if cursor is at the top of the screen
+                if (cursorState.y <= topThreshold) {
+
+                } else {
+                    cursorState.y -= cursorState.speed;
+                    moved = true;
+                }
+            }
+
+            if (keysPressed.ArrowDown) {
+                // Check if cursor is at the bottom of the screen
+                if (cursorState.y >= window.innerHeight - bottomThreshold) {
+
+                } else {
+                    cursorState.y += cursorState.speed;
+                    moved = true;
+                }
+            }
+
+            if (keysPressed.ArrowLeft) {
+                cursorState.x -= cursorState.speed;
+                moved = true;
+            }
+
+            if (keysPressed.ArrowRight) {
+                cursorState.x += cursorState.speed;
+                moved = true;
+            }
+
+            if (moved) {
+                updateCursorPosition(cursorState.x, cursorState.y);
+            }
+
+            requestAnimationFrame(animateCursor);
+        }
+
+        // Start animation loop
+        animateCursor();
+
+        // Handle key down events
+        document.addEventListener('keydown', (event) => {
+            const keyName = event.key;
+            const counterDisplay = document.getElementById('counterDisplay');
+            // counterDisplay.innerHTML += '<br>' + keyName;
+
+            // Handle backspace
+            if (keyName === "Backspace") {
+                event.preventDefault();
+                window.history.back();
+                return;
+            }
+
+            if (keyName === "Home") {
+                event.preventDefault();
+                // window.history.go(-window.history.length);
+                window.close();
+                return;
+            }
+
+            // Handle Enter key for clicking
+            if (keyName === "Enter") {
+                event.preventDefault();
+                coolitaBrowserExtend.exec("qjy_SimulateClick");
+                return;
+            }
+
+            // Handle arrow keys
+            if (keyName in keysPressed) {
+                // event.preventDefault();
+                keysPressed[keyName] = true;
+            }
+        });
+
+        // Handle key up events
+        document.addEventListener('keyup', (event) => {
+            const keyName = event.key;
+
+            if (keyName in keysPressed) {
+                // event.preventDefault();
+                keysPressed[keyName] = false;
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            updateCursorPosition(cursorState.x, cursorState.y);
+        });
+
+        // Prevent iframe from stealing focus
+        iframe.addEventListener('focus', () => {
+            window.focus();
+            document.body.focus();
+        });
+
+        // Also monitor for focus changes and ensure parent window stays focused
+        window.addEventListener('blur', () => {
+            setTimeout(() => {
+                window.focus();
+            }, 0);
+        });
+
+        // Use a test URL that allows iframe embedding
+        // When deploying to TV, replace this with the actual RAC URL
+        // iframe.src = "advertisement.html"  // Local test page
+        iframe.src = "https://maxmaxb.github.io/advertisement.html"
+        // iframe.src = "https://rac.com.au/products/insurance?utm_content=&gclsrc=aw.ds&gad_source=1&gad_campaignid=23027471472&gbraid=0AAAAADnUn4xZy7RTLOzUun_fmDG8iGooN&gclid=Cj0KCQiAq7HIBhDoARIsAOATDxCl6UoH4UbZp1VehexS2eBJzqHc0cj-3NrwcdM6KZB-oN0lI6mtfkIaAsB1EALw_wcB"
+    </script>
+</body>
+
+</html>
